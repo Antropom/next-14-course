@@ -24,7 +24,12 @@ const PostCard = () => {
           harum esse voluptatem delectus. Molestias provident omnis qui
           inventore tenetur!
         </p>
-        <Link href='/blog/post'>READ MORE</Link>
+        <Link
+          href='/blog/post'
+          className={styles.link}
+        >
+          READ MORE
+        </Link>
       </div>
     </div>
   )
