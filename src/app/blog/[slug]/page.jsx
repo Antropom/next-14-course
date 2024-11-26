@@ -1,7 +1,23 @@
 import Image from 'next/image'
 import styles from './singlePost.module.css'
+import PostUser from '@/components/postUser/PostUser'
+import { Suspense } from 'react'
 
-const SinglePostPage = () => {
+const getData = async (slug) => {
+  const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${slug}`)
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch data')
+  }
+
+  return await res.json()
+}
+
+const SinglePostPage = async ({ params }) => {
+  const { slug } = params
+
+  const post = await getData(slug)
+
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>
@@ -13,7 +29,7 @@ const SinglePostPage = () => {
         />
       </div>
       <div className={styles.textContainer}>
-        <h1 className={styles.title}>Title</h1>
+        <h1 className={styles.title}>{post.title}</h1>
         <div className={styles.detail}>
           <Image
             src='https://images.pexels.com/photos/28651765/pexels-photo-28651765/free-photo-of-fleur-de-nenuphar-sereine-sur-un-lac-paisible.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
@@ -22,21 +38,15 @@ const SinglePostPage = () => {
             width={50}
             className={styles.avatar}
           />
-          <div className={styles.detailText}>
-            <span className={styles.detailTitle}>Author</span>
-            <span className={styles.detailValue}>John Doe</span>
-          </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <PostUser userId={post.userId} />
+          </Suspense>
           <div className={styles.detailText}>
             <span className={styles.detailTitle}>Published</span>
             <span className={styles.detailValue}>01.01.2024</span>
           </div>
         </div>
-        <div className={styles.content}>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Adipisci,
-          eos. Quia quo fugit, vero voluptatum saepe excepturi ipsum asperiores
-          ducimus illum architecto, repudiandae alias iste. Eius autem hic
-          nesciunt suscipit.
-        </div>
+        <div className={styles.content}>{post.body}</div>
       </div>
     </div>
   )
